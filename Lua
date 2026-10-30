@@ -18,7 +18,7 @@ if success and scriptContent then
         :gsub("Wraith", "Zinith")
         :gsub("wraith", "zinith")
 
-    -- 3. On-screen overlay text, Icon Sweeper & System Notification ("made by DAVI")
+    -- 3. On-screen overlay text, Icon Sweeper & System Notification ("fuck u ViezBossVZ")
     task.spawn(function()
         pcall(function()
             -- Send Notification
