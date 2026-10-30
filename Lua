@@ -5,15 +5,20 @@ local success, scriptContent = pcall(function()
 end)
 
 if success and scriptContent then
-    -- 2. Direct string replacements (rebranding WRAITH to ZINITH and logo W to Z)
+    -- 2. Direct string replacements for rebranding WRAITH to ZINITH and swapping logo image assets
     local modifiedScript = scriptContent
-        :gsub('"W"', '"Z"')
-        :gsub("'W'", "'Z'")
+        -- Target the exact W logo asset or similar image IDs if present in the script
+        :gsub("rbxassetid://10871510444", "rbxassetid://6023426915") -- Replace with neutral asset if matched
+        :gsub("rbxassetid://%d+", function(id)
+            -- If there are custom image IDs used for the logo, you can catch them here, 
+            -- or we can clear ImageLabels that display the W logo.
+            return id
+        end)
         :gsub("WRAITH", "ZINITH")
         :gsub("Wraith", "Zinith")
         :gsub("wraith", "zinith")
 
-    -- 3. On-screen overlay text with BLACK background & System Notification ("made by DAVI")
+    -- 3. On-screen overlay text, Icon Sweeper & System Notification ("made by DAVI")
     task.spawn(function()
         pcall(function()
             -- Send Notification
@@ -62,10 +67,26 @@ if success and scriptContent then
             corner.Parent = label
 
             label.Parent = screenGui
+
+            -- 4. Dynamic UI Sweeper to clear out the image-based W logo graphic
+            task.spawn(function()
+                while task.wait(0.4) do
+                    pcall(function()
+                        for _, gui in ipairs(CoreGui:GetDescendants()) do
+                            -- Look for ImageLabels near the header title that act as the W logo
+                            if gui:IsA("ImageLabel") and (gui.AbsoluteSize.X < 80 and gui.AbsoluteSize.Y < 80) then
+                                if gui.Parent and (gui.Parent.Name:lower():find("title") or gui.Parent.Name:lower():find("header") or gui.AbsolutePosition.Y < 200) then
+                                    gui.Visible = false
+                                end
+                            end
+                        end
+                    end)
+                end
+            end)
         end)
     end)
 
-    -- 4. Execute modified script
+    -- 5. Execute modified script
     local executeFunc, err = loadstring(modifiedScript)
     if executeFunc then
         executeFunc()
