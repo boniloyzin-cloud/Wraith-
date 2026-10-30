@@ -1,0 +1,76 @@
+-- 1. Fetch raw script content
+local rawUrl = "https://raw.githubusercontent.com/2tb5ydb77n-lgtm/WRAITH/refs/heads/main/source"
+local success, scriptContent = pcall(function()
+    return game:HttpGet(rawUrl)
+end)
+
+if success and scriptContent then
+    -- 2. Direct string replacements for name rebranding to zinith
+    local modifiedScript = scriptContent
+        :gsub("WRAITH", "ZINITH")
+        :gsub("Wraith", "Zinith")
+        :gsub("wraith", "zinith")
+
+    -- 3. On-screen overlay text with BLACK background & System Notification ("Crack")
+    task.spawn(function()
+        pcall(function()
+            -- Send Notification
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "ZINITH",
+                Text = "made by DAVI",
+                Duration = 8;
+            })
+
+            -- Create Screen Overlay
+            local Players = game:GetService("Players")
+            local CoreGui = game:GetService("CoreGui")
+            local localPlayer = Players.LocalPlayer
+
+            local parentGui = CoreGui
+            local successParent = pcall(function() local test = CoreGui.Name end)
+            if not successParent then
+                parentGui = localPlayer:WaitForChild("PlayerGui")
+            end
+
+            if parentGui:FindFirstChild("DaviTopScreenText") then
+                parentGui.DaviTopScreenText:Destroy()
+            end
+
+            local screenGui = Instance.new("ScreenGui")
+            screenGui.Name = "DaviTopScreenText"
+            screenGui.ResetOnSpawn = false
+            screenGui.DisplayOrder = 999
+            screenGui.Parent = parentGui
+
+            -- Create TextLabel with a solid Black background box
+            local label = Instance.new("TextLabel")
+            label.Name = "DaviLabel"
+            label.Size = UDim2.new(0, 320, 0, 45)
+            label.Position = UDim2.new(0.5, -160, 0, 10) -- Top center of screen
+            label.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Solid black background
+            label.BackgroundTransparency = 0.3 -- Slight transparency for clean look
+            label.Text = "made by DAVI"
+            label.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
+            label.TextSize = 24
+            label.Font = Enum.Font.SourceSansBold
+            
+            -- Add rounded corners to the black background box
+            local corner = Instance.new("UICorner")
+            corner.CornerRadius = UDim.new(0, 8)
+            corner.Parent = label
+
+            label.Parent = screenGui
+        end)
+    end)
+
+    -- 4. Execute modified script
+    local executeFunc, err = loadstring(modifiedScript)
+    if executeFunc then
+        executeFunc()
+    else
+        local fallbackFunc = loadstring(scriptContent)
+        if fallbackFunc then
+            fallbackFunc()
+        end
+    end
+end
