@@ -5,13 +5,15 @@ local success, scriptContent = pcall(function()
 end)
 
 if success and scriptContent then
-    -- 2. Direct string replacements for name rebranding to zinith
+    -- 2. Direct string replacements (rebranding WRAITH to ZINITH and logo W to Z)
     local modifiedScript = scriptContent
+        :gsub('"W"', '"Z"')
+        :gsub("'W'", "'Z'")
         :gsub("WRAITH", "ZINITH")
         :gsub("Wraith", "Zinith")
         :gsub("wraith", "zinith")
 
-    -- 3. On-screen overlay text with BLACK background & System Notification ("Crack")
+    -- 3. On-screen overlay text with BLACK background & System Notification ("made by DAVI")
     task.spawn(function()
         pcall(function()
             -- Send Notification
